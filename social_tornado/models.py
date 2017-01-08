@@ -7,6 +7,7 @@ from social_sqlalchemy.storage import SQLAlchemyUserMixin, \
                                       SQLAlchemyAssociationMixin, \
                                       SQLAlchemyNonceMixin, \
                                       SQLAlchemyCodeMixin, \
+                                      SQLAlchemyPartialMixin, \
                                       BaseSQLAlchemyStorage
 
 
@@ -15,6 +16,7 @@ class TornadoStorage(BaseSQLAlchemyStorage):
     nonce = None
     association = None
     code = None
+    partial = None
 
 
 def init_social(Base, session, settings):
@@ -52,6 +54,11 @@ def init_social(Base, session, settings):
         pass
 
     class Code(_AppSession, Base, SQLAlchemyCodeMixin):
+        """Mail validation single one time use code"""
+        pass
+
+    class Partial(_AppSession, Base, SQLAlchemyPartialMixin):
+        """Partial pipeline storage"""
         pass
 
     # Set the references in the storage class
@@ -59,3 +66,4 @@ def init_social(Base, session, settings):
     TornadoStorage.nonce = Nonce
     TornadoStorage.association = Association
     TornadoStorage.code = Code
+    TornadoStorage.partial = Partial
