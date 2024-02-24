@@ -1,16 +1,22 @@
 from tornado.web import RequestHandler
 
 from social_core.actions import do_auth, do_complete, do_disconnect
+# from social_core.backends.utils import load_strategy, get_backend
+from social_tornado.utils import load_strategy, load_backend
 
 from .utils import psa
 
 
 class BaseHandler(RequestHandler):
+    def initialize(self):
+        self.strategy = load_strategy(self)
+
     def user_id(self):
         return self.get_secure_cookie('user_id')
 
     def get_current_user(self):
         user_id = self.user_id()
+
         if user_id:
             return self.backend.strategy.get_user(int(user_id))
 
@@ -47,5 +53,6 @@ class CompleteHandler(BaseHandler):
 
 
 class DisconnectHandler(BaseHandler):
-    def post(self):
-        do_disconnect()
+    def post(self, user=None, backend=None, association_id=None):
+        self.backend = load_backend(self, self.strategy, backend, '/')
+        do_disconnect(self.backend, self.get_current_user(), association_id, redirect_name='next')

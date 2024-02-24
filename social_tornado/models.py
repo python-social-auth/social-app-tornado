@@ -1,6 +1,6 @@
 """Tornado SQLAlchemy ORM models for Social Auth"""
-from sqlalchemy import Column, String, ForeignKey
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import String, ForeignKey
+from sqlalchemy.orm import relationship, backref, Mapped, mapped_column
 
 from social_core.utils import setting_name, module_member
 from social_sqlalchemy.storage import SQLAlchemyUserMixin, \
@@ -31,11 +31,11 @@ def init_social(Base, session, settings):
 
     class UserSocialAuth(_AppSession, Base, SQLAlchemyUserMixin):
         """Social Auth association model"""
-        uid = Column(String(UID_LENGTH))
-        user_id = Column(User.id.type, ForeignKey(User.id),
-                         nullable=False, index=True)
-        user = relationship(User, backref=backref('social_auth',
-                                                  lazy='dynamic'))
+        uid: Mapped[str] = mapped_column(String(UID_LENGTH))
+        user_id: Mapped[int] = mapped_column(ForeignKey(User.id),
+                                             nullable=False, index=True)
+        user: Mapped["User"] = relationship(User, backref=backref('social_auth',
+                                                                  lazy='dynamic'))
 
         @classmethod
         def username_max_length(cls):
