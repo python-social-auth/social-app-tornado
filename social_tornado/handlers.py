@@ -56,5 +56,8 @@ class DisconnectHandler(BaseHandler):
     def post(self, user=None, backend=None, association_id=None):
         self.backend = load_backend(self, self.strategy, backend, "/")
         do_disconnect(  # fmt: skip
-            self.backend, self.get_current_user(), association_id, redirect_name="next"
+            self.backend,  # fmt: skip
+            self.get_current_user(),  # fmt: skip
+            association_id,  # fmt: skip
+            redirect_name="next"
         )

@@ -1,6 +1,5 @@
 import json
 
-import six
 from social_core.strategy import BaseStrategy, BaseTemplateStrategy
 from social_core.utils import build_absolute_uri
 from tornado.template import Loader, Template
@@ -68,7 +67,8 @@ class TornadoStrategy(BaseStrategy):
 
     def partial_to_session(self, next, backend, request=None, *args, **kwargs):
         return json.dumps(
-            super().partial_to_session(next, backend, request=request, *args, **kwargs)
+            super().partial_to_session(  # fmt: skip
+                next, backend, request=request, *args, **kwargs)
         )
 
     def partial_from_session(self, session):
