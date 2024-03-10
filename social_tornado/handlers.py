@@ -59,5 +59,5 @@ class DisconnectHandler(BaseHandler):
             self.backend,  # fmt: skip
             self.get_current_user(),  # fmt: skip
             association_id,  # fmt: skip
-            redirect_name="next"
+            redirect_name="next",
         )

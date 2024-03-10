@@ -12,7 +12,8 @@ DEFAULTS = {
 
 def get_helper(request_handler, name):
     return request_handler.settings.get(  # fmt: skip
-        setting_name(name), DEFAULTS.get(name, None))
+        setting_name(name), DEFAULTS.get(name, None)
+    )
 
 
 def load_strategy(request_handler):

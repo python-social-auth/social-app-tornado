@@ -62,13 +62,14 @@ class TornadoStrategy(BaseStrategy):
 
     def build_absolute_uri(self, path=None):
         return build_absolute_uri(
-            "{}://{}".format(self.request.protocol, self.request.host), path
+            f"{self.request.protocol}://{self.request.host}", path
         )
 
     def partial_to_session(self, next, backend, request=None, *args, **kwargs):
         return json.dumps(
             super().partial_to_session(  # fmt: skip
-                next, backend, request=request, *args, **kwargs)
+                next, backend, request=request, *args, **kwargs
+            )
         )
 
     def partial_from_session(self, session):
