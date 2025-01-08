@@ -1,15 +1,13 @@
 import json
-import six
 
-from tornado.template import Loader, Template
-
-from social_core.utils import build_absolute_uri
 from social_core.strategy import BaseStrategy, BaseTemplateStrategy
+from social_core.utils import build_absolute_uri
+from tornado.template import Loader, Template
 
 
 class TornadoTemplateStrategy(BaseTemplateStrategy):
     def render_template(self, tpl, context):
-        path, tpl = tpl.rsplit('/', 1)
+        path, tpl = tpl.rsplit("/", 1)
         return Loader(path).load(tpl).generate(**context)
 
     def render_string(self, html, context):
@@ -22,15 +20,17 @@ class TornadoStrategy(BaseStrategy):
     def __init__(self, storage, request_handler, tpl=None):
         self.request_handler = request_handler
         self.request = self.request_handler.request
-        super(TornadoStrategy, self).__init__(storage, tpl)
+        super().__init__(storage, tpl)
 
     def get_setting(self, name):
         return self.request_handler.settings[name]
 
     def request_data(self, merge=True):
         # Multiple valued arguments not supported yet
-        return dict((key, val[0].decode())
-                for key, val in six.iteritems(self.request.arguments))
+        return {
+            key: val[0].decode()  # fmt: skip
+            for key, val in self.request.arguments.items()
+        }
 
     def request_host(self):
         return self.request.host
@@ -48,7 +48,9 @@ class TornadoStrategy(BaseStrategy):
         return default
 
     def session_set(self, name, value):
-        self.request_handler.set_secure_cookie(name, json.dumps(value).encode())
+        self.request_handler.set_secure_cookie(  # fmt: skip
+            name, json.dumps(value).encode()
+        )
 
     def session_pop(self, name):
         value = self.session_get(name)
@@ -59,17 +61,17 @@ class TornadoStrategy(BaseStrategy):
         pass
 
     def build_absolute_uri(self, path=None):
-        return build_absolute_uri('{0}://{1}'.format(self.request.protocol,
-                                                     self.request.host),
-                                  path)
+        return build_absolute_uri(
+            f"{self.request.protocol}://{self.request.host}", path
+        )
 
     def partial_to_session(self, next, backend, request=None, *args, **kwargs):
-        return json.dumps(super(TornadoStrategy, self).partial_to_session(
-            next, backend, request=request, *args, **kwargs
-        ))
+        return json.dumps(
+            super().partial_to_session(  # fmt: skip
+                next, backend, request=request, *args, **kwargs
+            )
+        )
 
     def partial_from_session(self, session):
         if session:
-            return super(TornadoStrategy, self).partial_to_session(
-                json.loads(session)
-            )
+            return super().partial_to_session(json.loads(session))
