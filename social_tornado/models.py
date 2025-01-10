@@ -53,22 +53,14 @@ def init_social(Base, session, settings):
     class Nonce(_AppSession, Base, SQLAlchemyNonceMixin):
         """One use numbers"""
 
-        pass
-
     class Association(_AppSession, Base, SQLAlchemyAssociationMixin):
         """OpenId account association"""
-
-        pass
 
     class Code(_AppSession, Base, SQLAlchemyCodeMixin):
         """Mail validation single one time use code"""
 
-        pass
-
     class Partial(_AppSession, Base, SQLAlchemyPartialMixin):
         """Partial pipeline storage"""
-
-        pass
 
     # Set the references in the storage class
     TornadoStorage.user = UserSocialAuth
